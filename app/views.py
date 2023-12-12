@@ -1,7 +1,7 @@
 from django.http import HttpResponse, JsonResponse, Http404
 from django.shortcuts import render, redirect
 from django.contrib.auth import logout
-from nanoid import generate
+from methodism import generate_key
 from app.models.short import ShortUrls
 
 
@@ -24,7 +24,7 @@ def shorten_url(request):
         if existing_url:
             return HttpResponse("The custom short URL already exists.", status=403)
 
-        new_url = ShortUrls(long_url=long_url, short_url=CustomShortUrl or generate(size=5), user=user)
+        new_url = ShortUrls(long_url=long_url, short_url=CustomShortUrl or generate_key(size=4), user=user)
         new_url.save()
         return HttpResponse(new_url.short_url)
     raise Http404("Page Not Found")
