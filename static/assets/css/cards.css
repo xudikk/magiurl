@@ -1,0 +1,314 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica,
+    Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+}
+
+.main-container {
+  padding: 30px;
+}
+
+/* HEADING */
+
+.heading {
+  text-align: center;
+}
+
+.heading__title {
+  font-weight: 600;
+}
+
+.heading__credits {
+  margin: 10px 0px;
+  color: #888888;
+  font-size: 25px;
+  transition: all 0.5s;
+}
+
+.heading__link {
+  text-decoration: none;
+}
+
+.heading__credits .heading__link {
+  color: inherit;
+}
+
+/* CARDS */
+
+.cards {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+.card {
+  margin: 20px;
+  padding: 20px;
+  width: 400px;
+  height: 200px;
+  display: grid;
+  grid-template-rows: 20px 50px 1fr 50px;
+  border-radius: 10px;
+  box-shadow: 0px 6px 10px rgba(0, 0, 0, 0.25);
+  transition: all 0.2s;
+}
+
+.card:hover {
+  box-shadow: 0px 6px 10px rgba(0, 0, 0, 0.4);
+  transform: scale(1.01);
+}
+
+.card__link,
+.card__icon {
+  position: relative;
+  text-decoration: none;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.card__link::after {
+  position: absolute;
+  top: 25px;
+  left: 0;
+  content: "";
+  width: 0%;
+  height: 3px;
+  background-color: rgba(255, 255, 255, 0.6);
+  transition: all 0.5s;
+}
+
+.card__link:hover::after {
+  width: 100%;
+}
+
+
+
+.card__icon {
+  grid-row: 2/3;
+  font-size: 30px;
+}
+
+.card__title {
+  grid-row: 3/4;
+  font-weight: 400;
+  color: #ffffff;
+}
+
+.card__apply {
+  grid-row: 4/5;
+  align-self: center;
+}
+
+
+.card-1 {
+  background: radial-gradient(#1fe4f5, #3fbafe);
+}
+
+.card-2 {
+  background: radial-gradient(#76b2fe, #b69efe);
+}
+
+.card img {
+    max-width: 100%;
+    max-height: 100px;
+    margin: auto;
+    display: block;
+    grid-row: 2/4;
+    grid-column: 2/2;
+}
+
+.card a {
+    text-decoration: none;
+    color: inherit;
+    cursor: pointer;
+}
+
+.glass-card {
+  max-width: 850px;
+  min-height: 350px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 300px;
+  padding: 35px;
+  border-radius: 20px;
+  background-color: rgba(255, 255, 255, 0.3);
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(15px);
+  margin: -20px auto 20px;
+  transition: background-color 0.3s ease-in-out;
+}
+
+.glass-card:hover {
+  background-color: rgba(255, 255, 255, 0.3) !important;
+}
+
+.hidden-form {
+  display: none;
+}
+
+#urlForm,
+#qrForm {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  box-shadow: none !important;
+  padding: 20px;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+  display: none;
+  width: 800px;
+  max-width: 100%;
+}
+
+ #qrcode{
+            position: absolute;
+            top: 50%;
+            left: 43%;
+            transform: translate(-50%, -50%);
+            perspective: 700px;
+            width: 200px;
+            height: 230px;
+            background: #fff;
+            box-shadow: 0 10px 15px rgba(0, 0, 0, .1), 0 -1px 6px rgba(0, 0, 0, .1);
+            border-radius: 5px;
+            padding: 20px;
+            transform-style: preserve-3d;
+            transition: 0.3s ease;
+            transform: scale(0) rotateY(0);
+            z-index:10000;
+
+        }
+
+        #downloadButton {
+              display: block;
+              background-color: #4CAF50;
+              color: white;
+              padding: 10px 45px;
+              border: none;
+              border-radius: 5px;
+              cursor: pointer;
+              margin-top: 10px;
+            }
+
+            #downloadButton:hover {
+              background-color: #45a049;
+            }
+
+        #overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            z-index:99;
+        }
+
+.close {
+  position: absolute;
+  top: -8px;
+  right: 2px;
+  font-size: 24px;
+  cursor: pointer;
+  color: black;
+}
+
+.close:hover {
+  color: #ff0000;
+}
+
+#shortenedUrlContainer {
+    display: flex;
+    margin-bottom: 10px;
+    margin-left: 260px;
+
+}
+
+#shortenedUrl {
+    border: 3px solid #6960EC;
+    border-right: none;
+    height: 36px;
+    max-width: 300px;
+    border-radius: 5px 0 0 5px;
+    outline: none;
+    padding: 5px;
+}
+
+#copyButton {
+    width: 50px;
+    height: 36px;
+    border: 1px solid #6960EC;
+    background: #6960EC;
+    text-align: center;
+    color: #fff;
+    border-radius: 0 5px 5px 0;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+#copyButton.clicked {
+    background: linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(9,90,121,1) 35%, rgba(0,212,255,1) 100%);
+}
+
+#shortenedQrContainer{
+    display: flex;
+    margin-top: 10px;
+    margin-left: 260px;
+
+}
+
+#shortenedQr {
+    border: 3px solid #6960EC;
+    border-right: none;
+    height: 36px;
+    max-width: 300px;
+    border-radius: 5px 0 0 5px;
+    outline: none;
+    padding: 5px;
+}
+
+#copyButtonQr {
+    width: 50px;
+    height: 36px;
+    border: 1px solid #6960EC;
+    background: #6960EC;
+    text-align: center;
+    color: #fff;
+    border-radius: 0 5px 5px 0;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+#copyButtonQr.clicked {
+    background: linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(9,90,121,1) 35%, rgba(0,212,255,1) 100%);
+}
+
+#shortenedErrorContainer {
+    display: flex;
+    margin-bottom: 10px;
+    margin-left: 250px;
+
+}
+
+#shortenedErrorUrl {
+    border: 3px solid #ff0000;
+    height: 36px;
+    max-width: 300px;
+    border-radius: 5px;
+    outline: none;
+    padding: 5px;
+}
+
+
+@media (max-width: 1600px) {
+  .cards {
+    justify-content: center;
+  }
+}

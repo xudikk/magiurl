@@ -1,0 +1,49 @@
+{% load i18n %}
+{% load allauth %}
+<title>
+        {% if process == "connect" %}
+            Connect with Google
+        {% else %}
+            Sign In with Google
+        {% endif %}
+</title>
+<style>
+     button {
+            background-color: #4285f4;
+            color: #fff;
+            padding: 12px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            border: none;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #3c78d8;
+        }
+</style>
+{% block content %}
+    <div style="max-width: 400px; margin: 0 auto; padding: 20px; text-align: center; margin-top: 200px;">
+
+        {% if process == "connect" %}
+            <h1 style="color: #333;">Connect with Google</h1>
+            <p style="color: #666;">You are about to connect a new third-party account from Google.</p>
+        {% else %}
+           <div style="display: flex; align-items: center; justify-content: center;">
+                <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/8399/G-on-clear.svg" alt="Google Logo" style="width: 60px; height: 60px;">
+                <h1 style="color: #333;">Connect with Google</h1>
+            </div>
+            <p style="color: #666;">You are about to sign in using a third-party account from Google.</p>
+        {% endif %}
+
+        <form method="post" action="/accounts/google/login/" no_visible_fields=True style="margin-top: 20px;">
+            {% csrf_token %}
+
+            <!-- Google logo and text -->
+            <button type="submit">
+                Continue with Google
+            </button>
+        </form>
+    </div>
+{% endblock content %}

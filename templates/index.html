@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    {% load static %}
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+    <title>MAGICode URL Shortener</title>
+    <meta content="" name="description">
+    <meta content="" name="keywords">
+
+    <!-- Favicons -->
+    <link href="{% static 'assets/img/icons/magic.png' %}" rel="icon">
+    <link href="{% static 'assets/img/apple-touch-icon.png' %}" rel="apple-touch-icon">
+    <script src="https://kit.fontawesome.com/282330dbc0.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i"
+          rel="stylesheet">
+
+    <!-- Vendor CSS Files -->
+    <link href="{% static 'assets/vendor/aos/aos.css' %}" rel="stylesheet">
+    <link href="{% static 'assets/vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'assets/vendor/bootstrap-icons/bootstrap-icons.css' %}" rel="stylesheet">
+    <link href="{% static 'assets/vendor/glightbox/css/glightbox.min.css' %}" rel="stylesheet">
+    <link href="{% static 'assets/vendor/remixicon/remixicon.css' %}" rel="stylesheet">
+    <link href="{% static 'assets/vendor/swiper/swiper-bundle.min.css' %}" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <link href="{% static 'assets/css/style.css' %}" rel="stylesheet">
+    <link href="{% static 'assets/css/cards.css' %}" rel="stylesheet">
+    <link href="{% static 'assets/css/auth.css' %}" rel="stylesheet">
+
+    <script src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5266379058275710"></script>
+
+
+
+</head>
+
+<body>
+{% load socialaccount %}
+<div id="overlay"></div>
+
+<!-- ======= Header ======= -->
+<header id="header" class="header fixed-top">
+
+    <div class="container-fluid container-xl d-flex align-items-center justify-content-between">
+
+        <a href="{% url 'home' %}" class="logo d-flex align-items-center">
+            <img src="{% static 'assets/img/icons/magic.png' %}" alt="">
+            <span>MAGICode</span>
+        </a>
+
+        <nav id="navbar" class="navbar">
+
+            <ul>
+                <li><a class="nav-link scrollto" href="#about">About</a></li>
+<!--                <li><a class="nav-link scrollto" href="#portfolio">Portfolio</a></li>-->
+                {% if user.is_authenticated %}
+                <li><a>{{ user.email }}</a></li>
+                <li><a href="logout">Logout</a></li>
+                {% else %}
+                <li><a class="getstarted scrollto" href="{% provider_login_url 'google' %}?next=/">Sign up</a></li>
+                {% endif %}
+            </ul>
+            <i class="bi bi-list mobile-nav-toggle"></i>
+            {% if not user.is_authenticated %}
+            <div class="popup-container" id="popupContainer">
+                <span class="close-button" onclick="closePopup()">&times;</span>
+                <div class="logo-container">
+                    <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/8399/G-on-clear.svg" alt="Google Logo">
+                    <p>Google Authentication</p>
+                </div>
+                <a href="{% provider_login_url 'google' %}?next=/" id="continue-button" onclick="handleContinue()">Sign
+                    in with Google Account</a>
+                <div class="timer" id="timerDisplay">Closing in 10s</div>
+            </div>
+            {% endif %}
+        </nav><!-- .navbar -->
+    </div>
+
+</header><!-- End Header -->
+
+
+<div id="qrcode">
+    <span class="close" onclick="hideForm()">&times;</span>
+    <div class="qr-code"></div>
+    <button id="downloadButton" onclick="downloadQRCode()">Download</button>
+</div>
+
+<section id="hero" class="hero d-flex align-items-center">
+    <div class="container" data-aos="fade-up">
+        <header class="section-header">
+            <h2>URL SHORTENER</h2>
+            <p>CHOOSE YOUR URL TYPE</p>
+        </header>
+
+        <div class="row" data-aos="fade-up" data-aos-delay="100">
+            <div class="col-lg-12 d-flex justify-content-center">
+                <div class="main-container">
+                    <div class="cards" id="cardContainer">
+                        <div class="card card-1" onclick="showUrlForm()">
+                            <div class="card__icon"><i class="fas fa-bolt"></i></div>
+                            <img src="{% static 'assets/img/icons/link.png' %}" alt="">
+                            <h2 class="card__title">URL</h2>
+                            <p class="card__apply card__link">
+                                Make Your Short URL
+                            </p>
+                        </div>
+
+                        <div class="card card-2" onclick="showQrForm()">
+                            <div class="card__icon"><i class="fas fa-bolt"></i></div>
+                            <img src="{% static 'assets/img/icons/qr.png' %}" alt="">
+                            <h2 class="card__title">QR CODE</h2>
+                            <p class="card__apply card__link">
+                                Make QR CODE Of Your URL
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="glass-card">
+            <!-- Form for url -->
+            <div id="urlForm" class="hidden-form">
+                <form role="form" id="post-form">
+                    {% csrf_token %}
+                    <label>Paste a long URL</label>
+                    <div class="mb-3">
+                        <input type="text" name="urlInput" id="urlInput" class="form-control"
+                               placeholder="Example: http://very_long_url_link.com" required>
+                    </div>
+                    <div id="shortenedUrlContainer">
+                        <span id="shortenedUrl"></span>
+                        <button type="button" id="copyButton" onclick="myFunction()">Copy</button>
+                    </div>
+                    <div id="shortenedErrorContainer">
+                        <span id="shortenedErrorUrl"></span>
+                    </div>
+
+                    <div class="row">
+                        <div class="col mb-3">
+                            <label>Domain</label>
+                            <div class="input-group">
+                                <input type="text" class="form-control" placeholder="MAGICode.com" disabled>
+                                <span class="input-group-text"><i class="fa-solid fa-lock"></i></span>
+                            </div>
+                        </div>
+                        <div class="col mb-3">
+                            <label>Enter a back-half (optional)</label>
+                            <div class="input-group">
+                                <input type="text" name="backHalfInput" id="backHalfInput" class="form-control"
+                                       placeholder="Example: favorite-link" {% if not user.is_authenticated %}disabled{% endif %}>
+                                <span class="input-group-text"><i {% if not user.is_authenticated %} class="fa-solid fa-lock" {% else %} class="fa-solid fa-unlock" {% endif %}></i></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="text-center">
+                        <button type="button" id="getLinkButton" class="btn btn-primary w-100 mt-4 mb-3">Get your Link
+                        </button>
+                    </div>
+                </form>
+            </div>
+            <!-- Form for qr -->
+            <div id="qrForm" class="hidden-form">
+                {% csrf_token %}
+                <label class="mb-3">Enter your QR Code destination</label>
+                <div class="mb-1">
+                    <input type="text" id="qrInput" class="form-control"
+                           placeholder="Example: http://very_long_url_link.com">
+                </div>
+                <div id="shortenedQrContainer">
+                    <span id="shortenedQr"></span>
+                    <button type="button" id="copyButtonQr" onclick="myQrFunction()">Copy</button>
+                </div>
+                <button type="button" id="showQrFormButton" class="btn btn-primary  w-100 mt-4 mb-3"
+                        onclick="generateAndShowQRCode()">Get your QR CODE
+                </button>
+            </div>
+        </div>
+    </div>
+
+</section>
+
+
+<main id="main">
+
+    <section id="counts" class="counts">
+        <div class="container" data-aos="fade-up">
+
+            <div class="row gy-4">
+
+                <div class="col-lg-3 col-md-6">
+                    <div class="count-box">
+                        <i class="bi bi-emoji-smile"></i>
+                        <div>
+                            <span data-purecounter-start="0" data-purecounter-end="232" data-purecounter-duration="1"
+                                  class="purecounter"></span>
+                            <p>Happy Clients</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-3 col-md-6">
+                    <div class="count-box">
+                        <i class="bi bi-journal-richtext" style="color: #ee6c20;"></i>
+                        <div>
+                            <span data-purecounter-start="0" data-purecounter-end="521" data-purecounter-duration="1"
+                                  class="purecounter"></span>
+                            <p>Projects</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-3 col-md-6">
+                    <div class="count-box">
+                        <i class="bi bi-headset" style="color: #15be56;"></i>
+                        <div>
+                            <span data-purecounter-start="0" data-purecounter-end="1463" data-purecounter-duration="1"
+                                  class="purecounter"></span>
+                            <p>Hours Of Support</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-3 col-md-6">
+                    <div class="count-box">
+                        <i class="bi bi-people" style="color: #bb0852;"></i>
+                        <div>
+                            <span data-purecounter-start="0" data-purecounter-end="15" data-purecounter-duration="1"
+                                  class="purecounter"></span>
+                            <p>Hard Workers</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </section><!-- End Counts Section -->
+
+</main><!-- End #main -->
+
+<!-- ======= Footer ======= -->
+<footer id="footer" class="footer">
+
+    <div class="footer-top">
+        <div class="container">
+            <div class="row gy-4">
+                <div class="col-lg-5 col-md-12 footer-info">
+                    <a href="{% url 'home' %}" class="logo d-flex align-items-center">
+                        <img src="{% static 'assets/img/icons/magic.png' %}" alt="">
+                        <span>MAGICode</span>
+                    </a>
+                    <div class="social-links mt-5">
+                        <a href="#" class="twitter"><i class="bi bi-twitter"></i></a>
+                        <a href="#" class="facebook"><i class="bi bi-facebook"></i></a>
+                        <a href="#" class="instagram"><i class="bi bi-instagram"></i></a>
+                        <a href="#" class="linkedin"><i class="bi bi-linkedin"></i></a>
+                    </div>
+                </div>
+
+
+                <div class="col-lg-3 col-md-12 footer-contact text-center text-md-start">
+                    <h4>Contact Us</h4>
+                    <p>
+                        A108 Adam Street <br>
+                        New York, NY 535022<br>
+                        United States <br><br>
+                        <strong>Phone:</strong> +1 5589 55488 55<br>
+                        <strong>Email:</strong> info@example.com<br>
+                    </p>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="copyright">
+            &copy; Copyright <strong><span>MAGICode</span></strong>. All Rights Reserved
+        </div>
+    </div>
+</footer>
+
+
+<script src="{% static 'assets/vendor/purecounter/purecounter_vanilla.js' %}"></script>
+<script src="{% static 'assets/vendor/aos/aos.js' %}"></script>
+<script src="{% static 'assets/vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+<script src="{% static 'assets/vendor/glightbox/js/glightbox.min.js' %}"></script>
+<script src="{% static 'assets/vendor/isotope-layout/isotope.pkgd.min.js' %}"></script>
+<script src="{% static 'assets/vendor/swiper/swiper-bundle.min.js' %}"></script>
+<script src="{% static 'assets/vendor/php-email-form/validate.js' %}"></script>
+
+
+<script src="{% static 'assets/js/main.js' %}"></script>
+<script src="{% static 'assets/js/qr.js' %}"></script>
+<script src="{% static 'assets/js/auth.js' %}"></script>
+<!-- ... (your existing HTML code) ... -->
+
+<script>
+    $(document).ready(function() {
+        $('#shortenedUrlContainer').hide();
+        $('#shortenedErrorContainer').hide();
+
+        $('#getLinkButton').on('click', function() {
+            var customShortUrl = $('#backHalfInput').val();
+            var requestData = {
+                urlInput: $('#urlInput').val(),
+                backHalfInput: customShortUrl,
+            };
+
+            $.ajax({
+                type: 'POST',
+                url: 'short/',
+                data: requestData,
+                headers: {
+                    'X-CSRFToken': $('input[name=csrfmiddlewaretoken]').val(),
+                },
+                success: function(data) {
+
+                    var shortenedUrl = customShortUrl ? "localhost:8000/" + customShortUrl : "localhost:8000/" + data;
+                    $('#shortenedUrl').html(shortenedUrl);
+                    $('#shortenedUrlContainer').hide().fadeIn(300);
+                },
+                error: function(error) {
+                console.log(error.responseText)
+                var error = error.responseText;
+                    $('#shortenedErrorUrl').html(error);
+                    $('#shortenedErrorContainer').hide().fadeIn(300);
+
+                }
+            });
+        });
+    });
+
+    function myFunction() {
+        var copyText = document.getElementById("shortenedUrl").innerText;
+        var tempTextArea = document.createElement("textarea");
+        tempTextArea.value = copyText;
+
+        document.body.appendChild(tempTextArea);
+
+        tempTextArea.select();
+
+        document.execCommand('copy');
+
+        document.body.removeChild(tempTextArea);
+        $("#copyButton").addClass("clicked");
+
+        setTimeout(function() {
+            $("#copyButton").removeClass("clicked");
+        }, 100);
+    }
+
+</script>
+
+
+<!-- add_block_footer -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-5266379058275710"
+     data-ad-slot="4793854615"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+</body>
+
+</html>
