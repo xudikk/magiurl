@@ -33,7 +33,7 @@ def shorten_url(request):
 def qr_short_url(request):
     if request.method == "POST":
         long_url = request.POST['qrInput']
-        shortUrl = generate(size=5)
+        shortUrl = generate_key(size=4)
         user = request.user if request.user.is_authenticated else None
 
         existing_url = ShortUrls.objects.filter(short_url=shortUrl).first()
