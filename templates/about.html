@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <title>About</title>
+    <link href="{% static 'assets/css/about.css' %}" rel="stylesheet">
+</head>
+
+<body>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<div id="container">
+
+    <div class="product-details">
+
+        <h1>MAGIC URL</h1>
+        <p class="information">Magic URL streamlines the process of shortening URLs, allowing users to convert complex
+            web addresses into concise and user-friendly links. Say goodbye to unwieldy URLs and hello to a cleaner,
+            more efficient online experience. <br>
+            Enhance the accessibility of your links by generating dynamic QR codes.
+        </p>
+        <div class="control">
+            <button class="btn">
+                <a href="{% url 'home' %}">
+                    <span class="shopping-cart"><i class="fa fa-home" aria-hidden="true"></i></span>
+                    <span class="buy">Home</span>
+                </a>
+            </button>
+
+        </div>
+
+    </div>
+
+    <div class="product-image">
+
+        <img src="{% static 'assets/img/icons/magic.png'%}"
+             alt="">
+
+
+        <div class="info">
+            <h2> Welcome to MAGICode </h2>
+            <ul>
+                <p>We specialize in creating dynamic and user-friendly Web applications tailored to meet the unique
+                    needs of our clients. From concept to deployment, our development process is characterized by
+                    creativity, efficiency, and a relentless pursuit of excellence. <br>
+                    From seasoned developers to creative designers and strategic thinkers, our team is united by a
+                    shared commitment to excellence. Together, we fuel innovation and transform ideas into reality.</p>
+            </ul>
+        </div>
+    </div>
+
+</div>
+
+
+</body>
+</html>

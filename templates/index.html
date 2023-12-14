@@ -54,7 +54,7 @@
         <nav id="navbar" class="navbar">
 
             <ul>
-                <li><a class="nav-link scrollto" href="#about">About</a></li>
+                <li><a class="nav-link scrollto" href="{% url 'about' %}">About</a></li>
 <!--                <li><a class="nav-link scrollto" href="#portfolio">Portfolio</a></li>-->
                 {% if user.is_authenticated %}
                 <li><a>{{ user.email }}</a></li>

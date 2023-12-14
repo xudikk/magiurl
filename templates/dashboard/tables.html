@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  {% load static %}
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <link rel="icon" type="image/png" href="{% static 'assets/img/icons/magic.png' %}">
+  <title>
+    MagicUrl | Dashboard
+  </title>
+  <!--     Fonts and icons     -->
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" />
+  <!-- Nucleo Icons -->
+  <link href="{% static 'assets/css/dashboard/nucleo-icons.css' %}" rel="stylesheet" />
+  <link href="{% static 'assets/css/dashboard/nucleo-svg.css' %}" rel="stylesheet"/>
+  <!-- Font Awesome Icons -->
+  <script src="https://kit.fontawesome.com/282330dbc0.js" crossorigin="anonymous"></script>
+  <link href="{% static 'assets/css/dashboard/nucleo-svg.css' %}" rel="stylesheet" />
+  <!-- CSS Files -->
+  <link id="pagestyle" href="{% static 'assets/css/dashboard/argon-dashboard.css' %}" rel="stylesheet" />
+</head>
+
+<body class="g-sidenav-show   bg-gray-100">
+  <div class="min-height-300 bg-primary position-absolute w-100"></div>
+  <main class="main-content position-relative border-radius-lg ">
+    <!-- Navbar -->
+    <nav class="navbar navbar-main navbar-expand-lg px-0 mx-4 shadow-none border-radius-xl " id="navbarBlur" data-scroll="false">
+      <div class="container-fluid py-1 px-3">
+        <nav aria-label="breadcrumb">
+          <h6 class="font-weight-bolder text-white mb-0">
+              <a href="{% url 'dashboard' %}" class="text-white">Table</a>
+          </h6>
+        </nav>
+        <div class="collapse navbar-collapse mt-sm-0 mt-2 me-md-0 me-sm-4" id="navbar">
+          <div class="ms-md-auto pe-md-3 d-flex align-items-center">
+              <div class="home-section">
+                  <a href="{% url 'home' %}">
+                    <span class="shopping-cart"><i class="fa fa-home" aria-hidden="true"></i></span>
+                    <span class="buy">Home</span>
+                </a>
+              </div>
+            <div class="input-group">
+              <span class="input-group-text text-body"><i class="fas fa-search" aria-hidden="true"></i></span>
+              <input type="text" class="form-control" placeholder="Type here...">
+            </div>
+          </div>
+        </div>
+      </div>
+    </nav>
+    <!-- End Navbar -->
+    <div class="container-fluid py-4">
+    <div class="row">
+        <div {% if user_id or null_user_status == 'True' %} class="col-6" {% else %} class="col-8" {% endif %}>
+            <!-- First Table -->
+            <div class="card mb-4">
+                <div class="card-header pb-0">
+                    <h6>URL list</h6>
+                </div>
+                <div class="card-body px-0 pt-0 pb-2">
+                    <div class="table-responsive p-0">
+                        <table class="table align-items-center mb-0">
+                            <thead>
+                                <tr>
+                                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">T/r</th>
+                                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Email</th>
+                                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Status</th>
+                                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Last Login</th>
+                                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td>
+                                    <div class="align-middle text-center">
+                                        <div class="d-flex flex-column justify-content-center">
+                                            <h6 class="mb-0 text-sm">
+                                                <i class="fa-solid fa-not-equal"></i>
+                                            </h6>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="align-middle text-center">
+                                        <div class="d-flex flex-column justify-content-center">
+                                            <h6 class="mb-0 text-sm">
+                                                <span class="bg-secondary rounded p-1 px-2 text-white">Anonymous Users</span>
+
+                                            </h6>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="align-middle text-center text-sm">
+                                    <span class="badge badge-sm bg-gradient-secondary">Null</span>
+                                </td>
+                                <td class="align-middle text-center text-sm">
+                                    <span class="badge badge-sm bg-gradient-secondary">Null</span>
+                                </td>
+                                <td class="align-middle text-center">
+                                    <a href="{% url 'null_users' null_user='True' %}" class="ListButton"><i class="fa-solid fa-list"></i></a>
+                                </td>
+                            </tr>
+                                {% for i in roots %}
+                                    <tr>
+                                        <td>
+                                            <div class="align-middle text-center">
+                                                <div class="d-flex flex-column justify-content-center">
+                                                    <h6 class="mb-0 text-sm">
+                                                        {{ forloop.counter }}
+                                                    </h6>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="align-middle text-center">
+                                                <div class="d-flex flex-column justify-content-center">
+                                                    <h6 class="mb-0 text-sm">{% if i.email%}{{ i.email }}{% else %}Anonim{% endif %}</h6>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="align-middle text-center text-sm">
+                                            <span class="badge badge-sm bg-gradient-success">{{ i.is_active }}</span>
+                                        </td>
+                                        <td class="align-middle text-center">
+                                            <span class="text-secondary text-xs font-weight-bold">{{ i.last_login |date:'Y-m-d H:i' }}</span>
+                                        </td>
+                                        <td class="align-middle text-center">
+                                            <a href="{% url 'user_urls' user_id=i.user_id %}" class="ListButton"><i class="fa-solid fa-list"></i></a>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        <div class="pagination">
+                    <span class="step-links">
+                        {% if roots.has_previous %}
+                            <a href="?page=1" class="btn btn-primary btn-sm">&laquo;first</a>
+                            <a href="?page={{ roots.previous_page_number }}" class="btn btn-primary btn-sm">prev</a>
+                        {% endif %}
+
+                        <span class="current">
+                            Page {{ roots.number }} of {{ roots.paginator.num_pages }}.
+                        </span>
+
+                        {% if roots.has_next %}
+                            <a href="?page={{ roots.next_page_number }}" class="btn btn-primary btn-sm">next</a>
+                            <a href="?page={{ roots.paginator.num_pages }}"
+                               class="btn btn-primary btn-sm">last&raquo;</a>
+                        {% endif %}
+                    </span>
+                    </div>
+        </div>
+        {% if user_id %}
+        <div class="col-6">
+            <div class="card mb-4">
+                <div class="card-header pb-0">
+                    <h6>User URLs</h6>
+                </div>
+                <div class="card-body px-0 pt-0 pb-2">
+                    <div class="table-responsive p-0">
+                        {% if user_urls %}
+                        <table class="table align-items-center mb-0">
+                            <thead>
+                                <tr>
+                                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Long</th>
+                                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Short</th>
+                                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Used</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for i in user_urls %}
+                                    <tr>
+                                        <td>
+                                            <div class="align-middle text-center">
+                                                <div class="d-flex flex-column justify-content-center">
+                                                    <h6 class="mb-0 text-sm">{{ i.long_url }}</h6>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="align-middle text-center text-sm">
+                                            <span class="badge badge-sm bg-gradient-success">{{ i.short_url }}</span>
+                                        </td>
+                                        <td class="align-middle text-center">
+                                            <span class="text-secondary text-xs font-weight-bold">{{ i.used }}</span>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                        {% else %}
+                            <div class="text-center py-3 border-top">Url mavjud emas <i class="fa-solid fa-not-equal"></i></div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% elif null_user_status == 'True' %}
+        <div class="col-6">
+            <div class="card mb-4">
+                <div class="card-header pb-0">
+                    <h6>User URLs</h6>
+                </div>
+                <div class="card-body px-0 pt-0 pb-2">
+                    <div class="table-responsive p-0">
+                        {% if null_users %}
+                        <table class="table align-items-center mb-0">
+                            <thead>
+                                <tr>
+                                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Long</th>
+                                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Short</th>
+                                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Used</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for i in null_users %}
+                                    <tr>
+                                        <td>
+                                            <div class="align-middle text-center">
+                                                <div class="d-flex flex-column justify-content-center">
+                                                    <h6 class="mb-0 text-sm">{{ i.long_url }}</h6>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="align-middle text-center text-sm">
+                                            <span class="badge badge-sm bg-gradient-success">{{ i.short_url }}</span>
+                                        </td>
+                                        <td class="align-middle text-center">
+                                            <span class="text-secondary text-xs font-weight-bold">{{ i.used }}</span>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                        {% else %}
+                            <div class="text-center py-3 border-top">Url mavjud emas <i class="fa-solid fa-not-equal"></i></div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+
+  </main>
+
+  <script src="{% static 'assets/js/core/popper.min.js' %}"></script>
+  <script src="{% static 'assets/js/core/bootstrap.min.js' %}"></script>
+  <script src="{% static 'assets/js/plugins/perfect-scrollbar.min.js' %}"></script>
+  <script src="{% static 'assets/js/plugins/smooth-scrollbar.min.js' %}"></script>
+  <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+  <script src="{% static 'assets/js/argon-dashboard.min.js' %}"></script>
+</body>
+
+</html>
