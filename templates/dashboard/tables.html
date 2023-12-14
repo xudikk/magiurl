@@ -51,7 +51,7 @@
     <!-- End Navbar -->
     <div class="container-fluid py-4">
     <div class="row">
-        <div {% if user_id or null_user_status == 'True' %} class="col-6" {% else %} class="col-8" {% endif %}>
+        <div class="col-6">
             <!-- First Table -->
             <div class="card mb-4">
                 <div class="card-header pb-0">
@@ -97,7 +97,7 @@
                                     <span class="badge badge-sm bg-gradient-secondary">Null</span>
                                 </td>
                                 <td class="align-middle text-center">
-                                    <a href="{% url 'null_users' null_user='True' %}" class="ListButton"><i class="fa-solid fa-list"></i></a>
+                                    <a href="{% url 'user_urls' user_id=0 %}" class="ListButton"><i class="fa-solid fa-list"></i></a>
                                 </td>
                             </tr>
                                 {% for i in roots %}
@@ -135,25 +135,24 @@
                 </div>
             </div>
         <div class="pagination">
-                    <span class="step-links">
-                        {% if roots.has_previous %}
-                            <a href="?page=1" class="btn btn-primary btn-sm">&laquo;first</a>
-                            <a href="?page={{ roots.previous_page_number }}" class="btn btn-primary btn-sm">prev</a>
-                        {% endif %}
+                <span class="step-links">
+                    {% if roots.has_previous %}
+                        <a href="?page=1" class="btn btn-primary btn-sm">&laquo;first</a>
+                        <a href="?page={{ roots.previous_page_number }}" class="btn btn-primary btn-sm">prev</a>
+                    {% endif %}
 
-                        <span class="current">
-                            Page {{ roots.number }} of {{ roots.paginator.num_pages }}.
-                        </span>
-
-                        {% if roots.has_next %}
-                            <a href="?page={{ roots.next_page_number }}" class="btn btn-primary btn-sm">next</a>
-                            <a href="?page={{ roots.paginator.num_pages }}"
-                               class="btn btn-primary btn-sm">last&raquo;</a>
-                        {% endif %}
+                    <span class="current">
+                        Page {{ roots.number }} of {{ roots.paginator.num_pages }}.
                     </span>
-                    </div>
+
+                    {% if roots.has_next %}
+                        <a href="?page={{ roots.next_page_number }}" class="btn btn-primary btn-sm">next</a>
+                        <a href="?page={{ roots.paginator.num_pages }}"
+                           class="btn btn-primary btn-sm">last&raquo;</a>
+                    {% endif %}
+                </span>
+                </div>
         </div>
-        {% if user_id %}
         <div class="col-6">
             <div class="card mb-4">
                 <div class="card-header pb-0">
@@ -180,8 +179,8 @@
                                                 </div>
                                             </div>
                                         </td>
-                                        <td class="align-middle text-center text-sm">
-                                            <span class="badge badge-sm bg-gradient-success">{{ i.short_url }}</span>
+                                        <td class="align-middle text-center ">
+                                            <span class="text-primary">{{ i.short_url }}</span>
                                         </td>
                                         <td class="align-middle text-center">
                                             <span class="text-secondary text-xs font-weight-bold">{{ i.used }}</span>
@@ -197,51 +196,7 @@
                 </div>
             </div>
         </div>
-        {% elif null_user_status == 'True' %}
-        <div class="col-6">
-            <div class="card mb-4">
-                <div class="card-header pb-0">
-                    <h6>User URLs</h6>
-                </div>
-                <div class="card-body px-0 pt-0 pb-2">
-                    <div class="table-responsive p-0">
-                        {% if null_users %}
-                        <table class="table align-items-center mb-0">
-                            <thead>
-                                <tr>
-                                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Long</th>
-                                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Short</th>
-                                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Used</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for i in null_users %}
-                                    <tr>
-                                        <td>
-                                            <div class="align-middle text-center">
-                                                <div class="d-flex flex-column justify-content-center">
-                                                    <h6 class="mb-0 text-sm">{{ i.long_url }}</h6>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td class="align-middle text-center text-sm">
-                                            <span class="badge badge-sm bg-gradient-success">{{ i.short_url }}</span>
-                                        </td>
-                                        <td class="align-middle text-center">
-                                            <span class="text-secondary text-xs font-weight-bold">{{ i.used }}</span>
-                                        </td>
-                                    </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                        {% else %}
-                            <div class="text-center py-3 border-top">Url mavjud emas <i class="fa-solid fa-not-equal"></i></div>
-                        {% endif %}
-                    </div>
-                </div>
-            </div>
-        </div>
-        {% endif %}
+
     </div>
 
   </main>

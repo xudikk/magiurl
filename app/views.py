@@ -6,7 +6,7 @@ from django.db import connection
 from django.http import HttpResponse, JsonResponse, Http404
 from django.shortcuts import render, redirect
 from django.contrib.auth import logout
-from nanoid import generate
+from methodism import generate_key
 from app.models.short import ShortUrls
 
 
@@ -18,55 +18,41 @@ def about(request):
     return render(request, 'about.html', {})
 
 
-def dashboard(request, user_id=None, null_user=None):
-    sql = '''SELECT au.id as user_id, au.email, au.last_login, au.is_active, su.long_url, su.short_url, su.used
-            FROM auth_user au
-            JOIN app_shorturls su
-            group by au.id
-             '''
-    null = f"""SELECT * from app_shorturls as2 where as2.user_id is Null"""
-    GetUserLinks = f'''SELECT long_url, short_url, used FROM app_shorturls as2 WHERE user_id == {user_id}'''
+def dashboard(request, user_id=None):
+    user_urls_result = []
+
+    if user_id or user_id == 0:
+        GetUserLinks = f'''
+                        SELECT long_url, short_url, used FROM app_shorturls as2 
+                        { f'WHERE user_id == {user_id}' if user_id else 'WHERE user_id is null' }
+                      '''
+        with closing(connection.cursor()) as cursor:
+            cursor.execute(GetUserLinks)
+            user_urls_result = dictfetchall(cursor)
 
     with closing(connection.cursor()) as cursor:
+        page_number = request.GET.get("page", 1)
+        limit = 50
+        offset = (page_number-1)*limit
+        sql = f'''
+            Select id as user_id, COALESCE(email, 'Anonim Email') as email, last_login, is_active
+            from auth_user 
+            order by id DESC 
+            limit {limit} offset {offset}
+         '''
         cursor.execute(sql)
         result = dictfetchall(cursor)
-        if null_user == 'True':
-            cursor.execute(null)
-        null_users = dictfetchall(cursor)
-        if user_id:
-            cursor.execute(GetUserLinks)
-        user_urls_result = dictfetchall(cursor)
-
-        displayed_emails = set()
-        unique_result = []
-        for i in result:
-            if i['email'] not in displayed_emails:
-                unique_result.append(i)
-                displayed_emails.add(i['email'])
 
         pagination = result
-        paginator = Paginator(pagination, 50)
-        page_number = request.GET.get("page", 1)
+        paginator = Paginator(pagination, limit)
         paginated = paginator.get_page(page_number)
 
         ctx = {
             'user_urls': user_urls_result,
             'user_id': user_id,
-            'null_users': null_users, 'null_user_status': null_user, "roots": paginated, "pos": "list"
-        }
-    return render(request, 'dashboard/tables.html', ctx)
-
-
-def user_urls(request, user_id=None):
-    GetUserLinks = f'''SELECT long_url, short_url, used FROM app_shorturls as2 WHERE user_id == {user_id}'''
-
-    with closing(connection.cursor()) as cursor:
-        cursor.execute(GetUserLinks)
-        user_urls_result = dictfetchall(cursor)
-
-        ctx = {
-            'user_urls': user_urls_result,
-            'user_id': user_id,
+            # 'null_users': null_users,
+            "roots": paginated,
+            "pos": "list"
         }
     return render(request, 'dashboard/tables.html', ctx)
 
@@ -86,16 +72,16 @@ def shorten_url(request):
         if existing_url:
             return HttpResponse("The custom short URL already exists.", status=403)
 
-        new_url = ShortUrls(long_url=long_url, short_url=CustomShortUrl or generate(size=5), user=user)
+        new_url = ShortUrls(long_url=long_url, short_url=CustomShortUrl or generate_key(size=3), user=user)
         new_url.save()
         return HttpResponse(new_url.short_url)
-    raise Http404("Page Not Found")
+    raise Http404("Unusable page")
 
 
 def qr_short_url(request):
     if request.method == "POST":
         long_url = request.POST['qrInput']
-        shortUrl = generate(size=5)
+        shortUrl = generate_key(size=3)
         user = request.user if request.user.is_authenticated else None
 
         existing_url = ShortUrls.objects.filter(short_url=shortUrl).first()

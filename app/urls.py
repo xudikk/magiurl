@@ -7,11 +7,11 @@ urlpatterns = [
     path('about/', about, name='about'),
 
     path('dashboard/', dashboard, name='dashboard'),
-    path('user_urls/<int:user_id>/', dashboard, name='user_urls'),
-    path('user_urls/<null_user>/', dashboard, name='null_users'),
+    path('user/urls/<int:user_id>/', dashboard, name='user_urls'),
+
 
     path('short/', shorten_url, name='short'),
     path('qr_short/', qr_short_url, name='qr_short'),
 
-    path('go/<str:pk>/', go_to, name='go')
+    path('<str:pk>/', go_to, name='go')
 ]
