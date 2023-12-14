@@ -345,24 +345,25 @@
         });
     });
 
-    function myFunction() {
-        var copyText = document.getElementById("shortenedUrl").innerText;
-        var tempTextArea = document.createElement("textarea");
-        tempTextArea.value = copyText;
+   function myFunction() {
+    var copyText = document.getElementById("shortenedUrl").innerText;
+    var tempTextArea = document.createElement("textarea");
+    tempTextArea.value = copyText;
 
-        document.body.appendChild(tempTextArea);
+    document.body.appendChild(tempTextArea);
 
-        tempTextArea.select();
+    tempTextArea.select();
 
-        document.execCommand('copy');
+    document.execCommand('copy');
 
-        document.body.removeChild(tempTextArea);
-        $("#copyButton").addClass("clicked");
+    document.body.removeChild(tempTextArea);
+    $("#copyButton").text("Copied");
 
-        setTimeout(function() {
-            $("#copyButton").removeClass("clicked");
-        }, 100);
-    }
+    setTimeout(function() {
+        $("#copyButton").text("Copy");
+    }, 1000);
+}
+
 
 </script>
 

@@ -24,7 +24,7 @@ def dashboard(request, user_id=None):
     if user_id or user_id == 0:
         GetUserLinks = f'''
                         SELECT long_url, short_url, used FROM app_shorturls as2 
-                        { f'WHERE user_id == {user_id}' if user_id else 'WHERE user_id is null' }
+                        {f'WHERE user_id == {user_id}' if user_id else 'WHERE user_id is null'}
                       '''
         with closing(connection.cursor()) as cursor:
             cursor.execute(GetUserLinks)
@@ -33,7 +33,7 @@ def dashboard(request, user_id=None):
     with closing(connection.cursor()) as cursor:
         page_number = request.GET.get("page", 1)
         limit = 50
-        offset = (page_number-1)*limit
+        offset = (page_number - 1) * limit
         sql = f'''
             Select id as user_id, COALESCE(email, 'Anonim Email') as email, last_login, is_active
             from auth_user 

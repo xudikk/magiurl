@@ -93,6 +93,7 @@ function downloadQRCode() {
     downloadLink.click();
     document.body.removeChild(downloadLink);
 }
+
 function myQrFunction() {
     var copyText = document.getElementById("shortenedQr").innerText;
     var tempTextArea = document.createElement("textarea");
@@ -105,9 +106,9 @@ function myQrFunction() {
     document.execCommand('copy');
 
     document.body.removeChild(tempTextArea);
-    $("#copyButtonQr").addClass("clicked");
+    $("#copyButtonQr").text("Copied");
 
     setTimeout(function() {
-        $("#copyButtonQr").removeClass("clicked");
-    }, 100);
+        $("#copyButtonQr").text("Copy");
+    }, 1000);
 }
