@@ -119,7 +119,7 @@
                                             </div>
                                         </td>
                                         <td class="align-middle text-center text-sm">
-                                            <span class="badge badge-sm bg-gradient-success">{{ i.is_active }}</span>
+                                            <a href="{% url 'user_banned' pk=i.user_id %}" class="badge badge-sm {{ i.html_class }} text-white">{{ i.is_active }}</a>
                                         </td>
                                         <td class="align-middle text-center">
                                             <span class="text-secondary text-xs font-weight-bold">{{ i.last_login |date:'Y-m-d H:i' }}</span>
@@ -164,6 +164,7 @@
                         <table class="table align-items-center mb-0">
                             <thead>
                                 <tr>
+                                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Delete</th>
                                     <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Long</th>
                                     <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Short</th>
                                     <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Used</th>
@@ -172,6 +173,13 @@
                             <tbody>
                                 {% for i in user_urls %}
                                     <tr>
+                                        <td>
+                                            <div class="align-middle text-center">
+                                                <div class="d-flex flex-column justify-content-center">
+                                                    <a href="{% url 'delete_url' url_id=i.id %}"><i class="fa-solid fa-x text-danger"></i></a>
+                                                </div>
+                                            </div>
+                                        </td>
                                         <td>
                                             <div class="align-middle text-center">
                                                 <div class="d-flex flex-column justify-content-center">

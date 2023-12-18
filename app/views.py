@@ -1,5 +1,6 @@
 from contextlib import closing
 
+from django.contrib.auth.models import User
 from django.core.paginator import Paginator
 from methodism import dictfetchall
 from django.db import connection
@@ -23,7 +24,7 @@ def dashboard(request, user_id=None):
 
     if user_id or user_id == 0:
         GetUserLinks = f'''
-                        SELECT long_url, short_url, used FROM app_shorturls as2 
+                        SELECT id, long_url, short_url, used FROM app_shorturls as2 
                         {f'WHERE user_id == {user_id}' if user_id else 'WHERE user_id is null'}
                       '''
         with closing(connection.cursor()) as cursor:
@@ -35,7 +36,12 @@ def dashboard(request, user_id=None):
         limit = 50
         offset = (page_number - 1) * limit
         sql = f'''
-            Select id as user_id, COALESCE(email, 'Anonim Email') as email, last_login, is_active
+            Select id as user_id, is_active,
+            CASE 
+                when is_active is false then 'bg-gradient-danger' 
+                else 'bg-gradient-success' 
+                END  as html_class,
+            last_login
             from auth_user 
             order by id DESC 
             limit {limit} offset {offset}
@@ -50,11 +56,12 @@ def dashboard(request, user_id=None):
         ctx = {
             'user_urls': user_urls_result,
             'user_id': user_id,
-            # 'null_users': null_users,
             "roots": paginated,
             "pos": "list"
         }
-    return render(request, 'dashboard/tables.html', ctx)
+    if request.user.is_staff:
+        return render(request, 'dashboard/tables.html', ctx)
+    return redirect('home')
 
 
 def logout_view(request):
@@ -104,3 +111,21 @@ def go_to(request, pk):
         return redirect(url_details.long_url)
     except ShortUrls.DoesNotExist:
         raise Http404("Short URL does not exist")
+
+
+def banned(request, pk):
+    user = User.objects.filter(id=pk).first()
+    if not user or request.user == user:
+        return redirect('dashboard')
+    user.is_active = not user.is_active
+    user.save()
+    return redirect('dashboard')
+
+
+def delete_url(request, url_id):
+    url = ShortUrls.objects.filter(id=url_id).first()
+    if not url:
+        return redirect('user_urls', user_id=0)
+    user_id = url.user_id
+    url.delete()
+    return redirect('user_urls', user_id=user_id or 0)
