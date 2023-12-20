@@ -46,7 +46,7 @@ function generateAndShowQRCode() {
             'X-CSRFToken': $('input[name=csrfmiddlewaretoken]').val(),
             },
             success: function(data) {
-                const completeUrl = "localhost:8000/" + data.short_url;
+                const completeUrl = "http://209.38.220.77/" + data.short_url;
                 $('#shortenedQr').html(completeUrl);
                 generateQRCode(completeUrl);
                 $('#shortenedQrContainer').hide().fadeIn(300);
